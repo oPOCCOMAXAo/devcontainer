@@ -3,27 +3,33 @@ FROM ubuntu:26.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends ca-certificates curl sudo \
-    && rm -rf /var/lib/apt/lists/*
+	&& apt-get upgrade -y \
+	&& apt-get install -y --no-install-recommends ca-certificates curl sudo \
+	build-essential unzip zip jq ripgrep fd-find less procps bash-completion \
+	man-db git openssh-client tmux xz-utils mariadb-client patch \
+	locales python3-full python3-pip python3-venv \
+	&& update-locale LANG=C.UTF-8 \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && rm -rf /var/lib/apt/lists/*
+	&& apt-get install -y --no-install-recommends nodejs \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g @opencode/cli @openchamber/web \
-    && npm cache clean --force
+	&& npm cache clean --force
 
 # ubuntu:26.04 ships an ubuntu user with UID 1000
 RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu \
-    && usermod -aG sudo ubuntu \
-    && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu \
-    && chmod 0440 /etc/sudoers.d/ubuntu \
-    && passwd -d ubuntu
+	&& usermod -aG sudo ubuntu \
+	&& echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu \
+	&& chmod 0440 /etc/sudoers.d/ubuntu \
+	&& passwd -d ubuntu
 
 RUN mkdir -p /workspace /home/ubuntu/.config/opencode \
-    && chown ubuntu:ubuntu /workspace \
-    && chown -R ubuntu:ubuntu /home/ubuntu/.config
+	&& chown ubuntu:ubuntu /workspace \
+	&& chown -R ubuntu:ubuntu /home/ubuntu/.config
 
 EXPOSE 3000 4096
 

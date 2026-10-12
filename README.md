@@ -1,14 +1,25 @@
 # Dev container
 
-Ubuntu 26.04 image with [OpenCode](https://opencode.ai) v2 and [OpenChamber](https://openchamber.dev).
+Prebuilt Ubuntu 26.04 image for agentic development. Ships [OpenCode](https://opencode.ai) v2 and [OpenChamber](https://openchamber.dev) on a full toolchain, so agents can build and test out of the box.
 
 ## Contents
 
 - Ubuntu 26.04 with all updates
 - Node.js 24 from NodeSource
+- Python 3 (full, with pip and venv)
 - OpenCode v2 (`@opencode/cli`) and OpenChamber (`@openchamber/web`)
 - User `ubuntu` (UID 1000), no password, sudo with no password
+- Locale `C.UTF-8`
 - OpenChamber serves on port 3000, OpenCode listens on port 4096
+
+## Development tools
+
+- Build: `build-essential` (gcc, g++, make), `patch`
+- VCS: `git`, OpenSSH client
+- Search: `ripgrep`, `fd-find`
+- Data: `jq`, MariaDB client
+- Files: `unzip`, `zip`, `xz-utils`, `less`, `tmux`
+- System: `procps`, `bash-completion`, `man-db`
 
 ## Build and push
 
