@@ -21,8 +21,8 @@ RUN npm install -g @opencode/cli @openchamber/web \
 	&& npm cache clean --force
 
 # ubuntu:26.04 ships an ubuntu user with UID 1000
-RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu \
-	&& usermod -aG sudo ubuntu \
+RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu; \
+	usermod -aG sudo ubuntu \
 	&& echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu \
 	&& chmod 0440 /etc/sudoers.d/ubuntu \
 	&& passwd -d ubuntu
