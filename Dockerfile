@@ -17,12 +17,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
 	&& apt-get install -y --no-install-recommends nodejs \
 	&& rm -rf /var/lib/apt/lists/*
 
-# user-writable npm prefix so `opencode upgrade` needs no sudo
+# user-writable npm prefix; global npm tools install at container startup
 ENV NPM_CONFIG_PREFIX=/home/ubuntu/.npm-global
 ENV PATH=/home/ubuntu/.npm-global/bin:$PATH
-
-RUN npm install -g @opencode/cli @openchamber/web \
-	&& npm cache clean --force
 
 # ubuntu:26.04 ships an ubuntu user with UID 1000
 RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu; \
@@ -35,6 +32,8 @@ RUN mkdir -p /workspace /home/ubuntu/.config/opencode \
 	&& chown ubuntu:ubuntu /workspace \
 	&& chown -R ubuntu:ubuntu /home/ubuntu
 
+COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
+
 EXPOSE 3000 4096
 
 VOLUME /workspace
@@ -46,4 +45,5 @@ WORKDIR /workspace
 # openchamber binds 127.0.0.1 by default; published ports need the interface.
 # No UI auth in this dev image, so explicitly allow LAN exposure.
 ENV OPENCHAMBER_ALLOW_UNAUTHENTICATED_LAN=true
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["openchamber", "--lan", "--foreground"]
