@@ -17,6 +17,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
 	&& apt-get install -y --no-install-recommends nodejs \
 	&& rm -rf /var/lib/apt/lists/*
 
+# user-writable npm prefix so `opencode upgrade` needs no sudo
+ENV NPM_CONFIG_PREFIX=/home/ubuntu/.npm-global
+ENV PATH=/home/ubuntu/.npm-global/bin:$PATH
+
 RUN npm install -g @opencode/cli @openchamber/web \
 	&& npm cache clean --force
 
@@ -29,7 +33,7 @@ RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu; \
 
 RUN mkdir -p /workspace /home/ubuntu/.config/opencode \
 	&& chown ubuntu:ubuntu /workspace \
-	&& chown -R ubuntu:ubuntu /home/ubuntu/.config
+	&& chown -R ubuntu:ubuntu /home/ubuntu
 
 EXPOSE 3000 4096
 
