@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
 	&& apt-get upgrade -y \
-	&& apt-get install -y --no-install-recommends ca-certificates curl sudo \
+	&& apt-get install -y --no-install-recommends ca-certificates curl sudo tini \
 	build-essential unzip zip jq ripgrep fd-find less procps bash-completion \
 	man-db git openssh-client tmux xz-utils mariadb-client patch \
 	locales python3-full python3-pip python3-venv \
@@ -45,5 +45,5 @@ WORKDIR /workspace
 # openchamber binds 127.0.0.1 by default; published ports need the interface.
 # No UI auth in this dev image, so explicitly allow LAN exposure.
 ENV OPENCHAMBER_ALLOW_UNAUTHENTICATED_LAN=true
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--", "entrypoint.sh"]
 CMD ["openchamber", "--lan", "--foreground"]
